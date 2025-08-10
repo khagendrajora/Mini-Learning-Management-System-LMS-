@@ -4,14 +4,8 @@ export const Loader = () => {
   return (
     <div>
       {" "}
-      <Button variant="primary" disabled>
-        <Spinner
-          as="span"
-          animation="border"
-          size="sm"
-          role="status"
-          aria-hidden="true"
-        />
+      <Button variant="white" disabled>
+        <Spinner as="span" size="sm" role="status" aria-hidden="true" />
         <span className="visually-hidden">Loading...</span>
       </Button>
     </div>

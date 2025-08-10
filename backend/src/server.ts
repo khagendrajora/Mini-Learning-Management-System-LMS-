@@ -1,10 +1,16 @@
 import express, { Request, Response } from "express";
+import admin from "firebase-admin";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { PrismaClient } from "@prisma/client";
-
 import path from "path";
+import userRoutes from "../src/Routes/userRoute";
+const serviceAccount = require(path.join(__dirname, "../service.json"));
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 const app = express();
 const prisma = new PrismaClient();
@@ -30,6 +36,8 @@ async function connect() {
     process.exit(1);
   }
 }
+
+app.use("/api", userRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");

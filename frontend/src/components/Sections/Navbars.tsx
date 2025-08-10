@@ -2,17 +2,31 @@ import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import { Nav } from "react-bootstrap";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { RxMagnifyingGlass } from "react-icons/rx";
 import { IoCartOutline } from "react-icons/io5";
 import { FaRegBell } from "react-icons/fa";
 import { TiMessages } from "react-icons/ti";
+import { useAuth } from "../../contexts/AuthContext";
+import { toast, ToastContainer } from "react-toastify";
 
 function Navbars() {
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
   const location = useLocation();
   const pathName = location.pathname;
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error: any) {
+      toast.error("logout Failed");
+    }
+  };
   return (
     <>
+      <ToastContainer />
       <Navbar expand="md" className="py-2 mx-auto flex md:gap-10 w-[95%]">
         <div className="flex w-full large:w-fit items-center justify-between">
           <Link to="/">
@@ -78,12 +92,21 @@ function Navbars() {
               <TiMessages className="w-7 h-7 large:w-10 large:h-10" />
               <IoCartOutline className="w-7 h-7 large:w-10 large:h-10" />
             </div>
-            <Nav.Link
-              href="/register"
-              className="text-white border rounded bg-black hover:!bg-white hover:!text-black p-2"
-            >
-              Join&nbsp;for&nbsp;Free
-            </Nav.Link>
+            {currentUser ? (
+              <Nav.Link
+                onClick={handleLogout}
+                className="text-white border rounded bg-black hover:!bg-white hover:!text-black p-2"
+              >
+                Log&nbsp;Out
+              </Nav.Link>
+            ) : (
+              <Nav.Link
+                href="/register"
+                className="text-white border rounded bg-black hover:!bg-white hover:!text-black p-2"
+              >
+                Join&nbsp;for&nbsp;Free
+              </Nav.Link>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Navbar>
