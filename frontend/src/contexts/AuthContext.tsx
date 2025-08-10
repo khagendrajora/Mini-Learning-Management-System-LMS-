@@ -58,9 +58,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }),
       });
       const data = await res.json();
+
       if (!res.ok) {
         throw new Error("Error Occured");
       }
+
       return data;
     } catch (err) {
       throw err;
@@ -82,6 +84,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (!res.ok) {
       toast.error("Login failed");
     }
+    sessionStorage.setItem("user", JSON.stringify(data));
     return data;
   };
 

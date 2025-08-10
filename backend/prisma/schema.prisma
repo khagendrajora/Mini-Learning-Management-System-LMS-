@@ -22,78 +22,44 @@ model User {
   name         String
   role         Role      @default(STUDENT)
   createdAt    DateTime  @default(now())
-  coursesTaken CourseProgress[]
-  comments     Comment[]
-  videos       Video[]
-  quizResult   QuizResult[]
+  module       Module[]
+ 
 }
+
+
+model Admin {
+  adminId  Int      @id @default(autoincrement())
+  email   String   @unique
+  password String
+  name    String
+  role    Role  @default(ADMIN)  
+  createdAt DateTime @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
 
 model Course {
-  courseId          Int       @id @default(autoincrement())
-  title       String
+  courseId Int @id @default(autoincrement())
+  courseTitle  String
   description String
-  thumbnail   String?
-  createdAt   DateTime  @default(now())
-  videos      Video[]
-  quizzes     Quiz[]
-  courseProgress CourseProgress[]
+  duration String
+  status String
+  thumbnail String?
+  path String
+  module Module[]
+
 }
 
+model Module {
+  moduleId Int @id @default(autoincrement())
+  title String
+  description String
+  file String[]
+  video String[]
+  course Course? @relation(fields:[courseId],references:[courseId])
+  courseId Int?
+  user User? @relation(fields:[userId],references:[userId])
+  userId Int?
 
-
-model Video {
-  videoId     Int       @id @default(autoincrement())
-  title       String
-  description String?
-  url         String    
-  duration    Int?     
-  course      Course?   @relation(fields: [courseId], references: [courseId])
-  courseId    Int?
-  user      User?   @relation(fields: [userId], references: [userId])
-  userId    Int?
-  createdAt   DateTime  @default(now())
-  comments    Comment[]
 }
 
-model CourseProgress {
-  progressId        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [userId])
-  userId    Int
-  course    Course   @relation(fields: [courseId], references: [courseId])
-  courseId  Int
-  progress  Json     @default("{}") 
-  updatedAt DateTime @updatedAt
-}
-
-model Comment {
-  commentId  Int      @id @default(autoincrement())
-  text      String
-  user      User     @relation(fields: [userId], references: [userId])
-  userId    Int
-  video     Video?   @relation(fields: [videoId], references: [videoId])
-  videoId   Int?
-  createdAt DateTime @default(now())
-}
-
-
-
-model Quiz {
-  quizId    Int      @id @default(autoincrement())
-  title     String
-  course    Course   @relation(fields: [courseId], references: [courseId])
-  courseId  Int
-  questions Json   
-  createdAt DateTime @default(now())
-  results   QuizResult[]
-}
-
-model QuizResult {
-  quizResultId       Int     @id @default(autoincrement())
-  user     User    @relation(fields: [userId], references: [userId])
-  userId   Int
-  quiz     Quiz    @relation(fields: [quizId], references: [quizId])
-  quizId   Int
-  score    Float
-  metadata Json?
-  createdAt DateTime @default(now())
-}
