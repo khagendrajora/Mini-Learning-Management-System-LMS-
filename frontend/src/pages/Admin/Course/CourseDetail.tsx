@@ -6,7 +6,6 @@ import Form from "react-bootstrap/Form";
 const URL = import.meta.env.VITE_Backend_URL;
 const FILE_URL = import.meta.env.VITE_FILE_URL;
 import HTMLReactParser from "html-react-parser/lib/index";
-
 import { FiChevronsDown } from "react-icons/fi";
 import {
   MdDeleteForever,
@@ -16,7 +15,7 @@ import {
 import { FaRegEdit, FaRegFilePdf } from "react-icons/fa";
 import { HiArchiveBoxXMark } from "react-icons/hi2";
 import { FaXmark } from "react-icons/fa6";
-import type { CourseType } from "../../../Types/SchemaTypes";
+import type { CommentTypes, CourseType } from "../../../Types/SchemaTypes";
 import { Loader, PageLoader } from "../../../utils/Utils";
 
 export const CourseDescription = () => {
@@ -30,6 +29,7 @@ export const CourseDescription = () => {
   const params = useParams();
   const courseId = params.id;
   const [data, setData] = useState<CourseType>();
+  const [moduleId, setModuleId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -49,12 +49,14 @@ export const CourseDescription = () => {
     }
   };
 
-  const handleList = (i: number) => {
+  const handleList = (i: number, id: number) => {
     if (key === i) {
       setKey(null);
+      setModuleId(null);
       return;
     } else {
       setKey(i);
+      setModuleId(id);
       return;
     }
   };
@@ -106,7 +108,6 @@ export const CourseDescription = () => {
     video: [],
   });
 
-  //Addind New Module
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoader(true);
@@ -145,7 +146,6 @@ export const CourseDescription = () => {
     }
   };
 
-  //Adding Files TO module
   const handleModule = async (e: any) => {
     e.preventDefault();
     setModuleSubmitLoader(true);
@@ -179,7 +179,6 @@ export const CourseDescription = () => {
     }
   };
 
-  //delete individual File of module
   const deleteModuleFile = async (id: number, v: string, type: string) => {
     const Okey = confirm(" Delete this File? ");
     if (!Okey) return;
@@ -202,6 +201,44 @@ export const CourseDescription = () => {
     }
   };
 
+  const [comments, setComments] = useState<CommentTypes[]>([]);
+
+  const fetchComments = async () => {
+    try {
+      const res = await fetch(`${URL}/module-comment/${moduleId}`);
+      const datas = await res.json();
+      if (!res.ok) {
+        toast.error("Error in Fetching Comments!");
+      } else {
+        setComments(datas);
+      }
+    } catch (error: any) {
+      toast.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchComments();
+  }, [moduleId]);
+
+  const DeleteComment = async (id: number) => {
+    const Okey = confirm(" Delete this Comment ? ");
+    if (!Okey) return;
+    try {
+      const res = await fetch(`${URL}/delete-comment/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        toast.error("Failed to add");
+      } else {
+        toast.success("Comment Added");
+        setComments((prev) => prev.filter((c) => c.commentId != id));
+      }
+    } catch (error: any) {
+      toast.error("Failed to add !");
+    }
+  };
+
   return (
     <>
       <ToastContainer />
@@ -211,16 +248,6 @@ export const CourseDescription = () => {
             <div className="flex justify-between ">
               <div>
                 <h1>{data.courseTitle}</h1>
-              </div>
-              <div>
-                <button
-                  onClick={() =>
-                    navigate(`/admin/course/course-update/${courseId}`)
-                  }
-                  className="bg-[var(--darkGreen)] text-white p-2 button !rounded-lg"
-                >
-                  Update Course
-                </button>
               </div>
             </div>
             <div className="flex gap-4 mt-4">
@@ -246,6 +273,16 @@ export const CourseDescription = () => {
                   </span>
                 </h6>
               </div>
+            </div>
+            <div>
+              <button
+                onClick={() =>
+                  navigate(`/admin/course/course-update/${courseId}`)
+                }
+                className="bg-green-600 !text-xs text-white p-2 hover:bg-green-700 !rounded-lg"
+              >
+                Update Course
+              </button>
             </div>
             <p>{HTMLReactParser(data.description)}</p>
           </div>
@@ -365,194 +402,220 @@ export const CourseDescription = () => {
                 </Button>
               </div>
             </Form>
-
-            <div className=" mt-4 max-w-[35rem] space-y-2 ">
-              {data.module.length > 0 &&
-                data.module.map((m, index) => (
-                  <React.Fragment key={index}>
-                    <div className=" p-2 hover:!bg-gray-50 text-lg bg-white rounded-lg font-bold ">
-                      <span className="flex justify-between  cursor-pointer items-center">
-                        <div className="flex items-center justify-between gap-2">
-                          <span
-                            className="text-end"
-                            onClick={() => handleList(index)}
-                          >
-                            <FiChevronsDown
-                              size={30}
-                              className={`${
-                                key === index ? "rotate-180" : "rotate-0"
-                              } transition-all duration-700 hover:scale-110`}
-                            />
-                          </span>
-                          {m.title}
-                        </div>
-                        <div className="flex gap-3 item-center">
-                          <span className="text-end">
-                            <MdOutlineAddToDrive
-                              title="Add Files"
-                              size={30}
-                              onClick={() => setModuleFileForm(m.moduleId)}
-                              className={`hover:scale-110 transition-all duration-500`}
-                            />
-                          </span>
-
-                          <button className="text-rose-700">
-                            {loading === m.moduleId ? (
-                              <Loader />
-                            ) : (
-                              <MdDeleteForever
+            <div className="flex  justify-between w-11/12">
+              <div className=" mt-4  space-y-2 ">
+                {data.module.length > 0 &&
+                  data.module.map((m, index) => (
+                    <React.Fragment key={index}>
+                      <div className=" p-2 hover:!bg-gray-50 text-lg bg-white rounded-lg font-bold ">
+                        <span className="flex justify-between  cursor-pointer items-center">
+                          <div className="flex items-center justify-between gap-2">
+                            <span
+                              className="text-end"
+                              onClick={() => handleList(index, m.moduleId || 0)}
+                            >
+                              <FiChevronsDown
                                 size={30}
-                                title="Delete"
-                                className="hover:scale-110"
-                                onClick={() => handleDelete(m.moduleId)}
+                                className={`${
+                                  key === index ? "rotate-180" : "rotate-0"
+                                } transition-all duration-700 hover:scale-110`}
                               />
-                            )}
-                          </button>
-                          <button
-                            onClick={() =>
-                              navigate(
-                                `/admin/course/course-detail/module-update/${m.moduleId}`
-                              )
-                            }
-                            className="text-blue-700 hover:scale-110"
-                          >
-                            <FaRegEdit size={30} title="Edit" />
-                          </button>
-                        </div>
-                      </span>
-                    </div>
-                    <div
-                      className={`${
-                        moduleFileForm === m.moduleId ? "block" : "hidden"
-                      }`}
-                    >
-                      <Form
-                        onSubmit={handleModule}
-                        className="mt-10 relative  text-black font-medium lg:!pl-10 space-y-5 p-3 rounded-lg bg-white"
+                            </span>
+                            {m.title}
+                          </div>
+                          <div className="flex gap-3 item-center">
+                            <span className="text-end">
+                              <MdOutlineAddToDrive
+                                title="Add Files"
+                                size={30}
+                                onClick={() =>
+                                  setModuleFileForm(m.moduleId || 0)
+                                }
+                                className={`hover:scale-110 transition-all duration-500`}
+                              />
+                            </span>
+
+                            <button className="text-rose-700">
+                              {loading === m.moduleId ? (
+                                <Loader />
+                              ) : (
+                                <MdDeleteForever
+                                  size={30}
+                                  title="Delete"
+                                  className="hover:scale-110"
+                                  onClick={() => handleDelete(m.moduleId || 0)}
+                                />
+                              )}
+                            </button>
+                            <button
+                              onClick={() =>
+                                navigate(
+                                  `/admin/course/course-detail/module-update/${m.moduleId}`
+                                )
+                              }
+                              className="text-blue-700 hover:scale-110"
+                            >
+                              <FaRegEdit size={30} title="Edit" />
+                            </button>
+                          </div>
+                        </span>
+                      </div>
+                      <div
+                        className={`${
+                          moduleFileForm === m.moduleId ? "block" : "hidden"
+                        }`}
                       >
-                        <FaXmark
-                          size={30}
-                          className="text-red-600 absolute right-2 top-1  cursor-pointer hover:scale-110 "
-                          title="Cancel"
-                          onClick={() => {
-                            setModuleFile({
-                              file: [],
-                              video: [],
-                            }),
-                              setModuleFileForm(null);
-                          }}
-                        />
-                        <Form.Group
-                          className="max-w-[30rem] mt-3"
-                          controlId="formGridAddress2"
+                        <Form
+                          onSubmit={handleModule}
+                          className="mt-10 relative  text-black font-medium lg:!pl-10 space-y-5 p-3 rounded-lg bg-white"
                         >
-                          <Form.Label>File</Form.Label>
-                          <Form.Control
-                            type="file"
-                            multiple
-                            onChange={(e) => {
-                              const target = e.target as HTMLInputElement;
-                              setModuleFile((prev) => ({
-                                ...prev,
-                                file: target.files
-                                  ? Array.from(target.files)
-                                  : [],
-                              }));
+                          <FaXmark
+                            size={30}
+                            className="text-red-600 absolute right-2 top-1  cursor-pointer hover:scale-110 "
+                            title="Cancel"
+                            onClick={() => {
+                              setModuleFile({
+                                file: [],
+                                video: [],
+                              }),
+                                setModuleFileForm(null);
                             }}
-                            className="border-black !border-[0.1rem]"
-                            placeholder="Price"
                           />
-                        </Form.Group>
-
-                        <Form.Group
-                          className="max-w-[30rem] mt-3"
-                          controlId="formGridAddress2"
-                        >
-                          <Form.Label>Video</Form.Label>
-                          <Form.Control
-                            type="file"
-                            multiple
-                            onChange={(e) => {
-                              const target = e.target as HTMLInputElement;
-                              setModuleFile((prev) => ({
-                                ...prev,
-                                video: target.files
-                                  ? Array.from(target.files)
-                                  : [],
-                              }));
-                            }}
-                            className="border-black !border-[0.1rem]"
-                            placeholder="Price"
-                          />
-                        </Form.Group>
-                        <Button
-                          variant="primary"
-                          type="submit"
-                          className="max-w-[30rem] my-3 mx-auto"
-                        >
-                          <span>
-                            {moduleSubmitLoader ? <Loader /> : "Submit"}
-                          </span>
-                        </Button>
-                      </Form>
-                    </div>
-                    <div
-                      className={`${
-                        key === index
-                          ? "block opacity-100 h-auto"
-                          : "hidden opacity-0 h-0"
-                      }  bg-white  p-2 space-y-3 rounded-b-2xl transition-all duration-700  border-t-0 border-b-1`}
-                    >
-                      {m.video.length > 0 &&
-                        m.video.map((v) => (
-                          <div className="flex items-center border-b-1 border-gray-200">
-                            <Link
-                              to={`${FILE_URL}/${v}`}
-                              target="blank"
-                              className="flex w-full justify-between text-black items-center gap-2"
-                            >
-                              <div className="flex items-center gap-2">
-                                <MdOutlineSlowMotionVideo size={60} />
-                                {v}
-                              </div>
-                            </Link>
-                            <HiArchiveBoxXMark
-                              size={30}
-                              className="text-red-600 text-end w-fit cursor-pointer hover:scale-110 "
-                              title="Delete"
-                              onClick={() =>
-                                deleteModuleFile(m.moduleId, v, "video")
-                              }
+                          <Form.Group
+                            className="max-w-[30rem] mt-3"
+                            controlId="formGridAddress2"
+                          >
+                            <Form.Label>File</Form.Label>
+                            <Form.Control
+                              type="file"
+                              multiple
+                              onChange={(e) => {
+                                const target = e.target as HTMLInputElement;
+                                setModuleFile((prev) => ({
+                                  ...prev,
+                                  file: target.files
+                                    ? Array.from(target.files)
+                                    : [],
+                                }));
+                              }}
+                              className="border-black !border-[0.1rem]"
+                              placeholder="Price"
                             />
-                          </div>
-                        ))}
+                          </Form.Group>
 
-                      {m.file.length > 0 &&
-                        m.file.map((f) => (
-                          <div className="flex items-center py-2 border-b-1 border-gray-200">
-                            <Link
-                              to={`${FILE_URL}/${f}`}
-                              target="blank"
-                              className="flex  w-full justify-between !text-black items-center gap-2"
-                            >
-                              <div className="flex items-center gap-2">
-                                <FaRegFilePdf size={40} />
-                                {f}
-                              </div>
-                            </Link>
-                            <HiArchiveBoxXMark
-                              size={30}
-                              className="text-red-600 text-end w-fit cursor-pointer hover:scale-110 "
-                              title="Delete"
-                              onClick={() =>
-                                deleteModuleFile(m.moduleId, f, "file")
-                              }
+                          <Form.Group
+                            className="max-w-[30rem] mt-3"
+                            controlId="formGridAddress2"
+                          >
+                            <Form.Label>Video</Form.Label>
+                            <Form.Control
+                              type="file"
+                              multiple
+                              onChange={(e) => {
+                                const target = e.target as HTMLInputElement;
+                                setModuleFile((prev) => ({
+                                  ...prev,
+                                  video: target.files
+                                    ? Array.from(target.files)
+                                    : [],
+                                }));
+                              }}
+                              className="border-black !border-[0.1rem]"
+                              placeholder="Price"
                             />
-                          </div>
-                        ))}
+                          </Form.Group>
+                          <Button
+                            variant="primary"
+                            type="submit"
+                            className="max-w-[30rem] my-3 mx-auto"
+                          >
+                            <span>
+                              {moduleSubmitLoader ? <Loader /> : "Submit"}
+                            </span>
+                          </Button>
+                        </Form>
+                      </div>
+                      <div
+                        className={`${
+                          key === index
+                            ? "block opacity-100 h-auto"
+                            : "hidden opacity-0 h-0"
+                        }  bg-white  p-2 space-y-3 rounded-b-2xl transition-all duration-700  border-t-0 border-b-1`}
+                      >
+                        {m.video.length > 0 &&
+                          m.video.map((v) => (
+                            <div className="flex items-center border-b-1 border-gray-200">
+                              <Link
+                                to={`${FILE_URL}/${v}`}
+                                target="blank"
+                                className="flex w-full justify-between text-black items-center gap-2"
+                              >
+                                <div className="flex items-center gap-2">
+                                  <MdOutlineSlowMotionVideo size={60} />
+                                  {v}
+                                </div>
+                              </Link>
+                              <HiArchiveBoxXMark
+                                size={30}
+                                className="text-red-600 text-end w-fit cursor-pointer hover:scale-110 "
+                                title="Delete"
+                                onClick={() =>
+                                  deleteModuleFile(m.moduleId || 0, v, "video")
+                                }
+                              />
+                            </div>
+                          ))}
+
+                        {m.file.length > 0 &&
+                          m.file.map((f) => (
+                            <div className="flex items-center py-2 border-b-1 border-gray-200">
+                              <Link
+                                to={`${FILE_URL}/${f}`}
+                                target="blank"
+                                className="flex  w-full justify-between !text-black items-center gap-2"
+                              >
+                                <div className="flex items-center gap-2">
+                                  <FaRegFilePdf size={40} />
+                                  {f}
+                                </div>
+                              </Link>
+                              <HiArchiveBoxXMark
+                                size={30}
+                                className="text-red-600 text-end w-fit cursor-pointer hover:scale-110 "
+                                title="Delete"
+                                onClick={() =>
+                                  deleteModuleFile(m.moduleId || 0, f, "file")
+                                }
+                              />
+                            </div>
+                          ))}
+                      </div>
+                    </React.Fragment>
+                  ))}
+              </div>
+              <div className="bg-white h-fit p-3 rounded ">
+                <h3 className="">Your Comments</h3>
+                {comments.length > 0 &&
+                  comments.map((c, i) => (
+                    <div className="w-fit   p-2">
+                      <li className="flex p-2 gap-4 items-center justify-between">
+                        <div>{i + 1}.</div>
+                        <div>{c.message}</div>
+                        <div className="text-xs">By: {c.user.name}</div>
+                        <div className="text-xs">
+                          {c.createdAt.split("T")[0]}
+                        </div>
+                        <button
+                          onClick={() => DeleteComment(c.commentId || 0)}
+                          className="!text-xs underline hover:text-blue-500"
+                        >
+                          Delete
+                        </button>
+                      </li>
+                      <hr />
                     </div>
-                  </React.Fragment>
-                ))}
+                  ))}
+              </div>
             </div>
           </div>
         </div>

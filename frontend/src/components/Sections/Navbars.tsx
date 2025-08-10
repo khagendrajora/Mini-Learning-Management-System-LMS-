@@ -2,7 +2,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import { Nav } from "react-bootstrap";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RxMagnifyingGlass } from "react-icons/rx";
 import { IoCartOutline } from "react-icons/io5";
 import { FaRegBell } from "react-icons/fa";
@@ -13,8 +13,6 @@ import { toast, ToastContainer } from "react-toastify";
 function Navbars() {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const pathName = location.pathname;
 
   const handleLogout = async () => {
     try {
@@ -79,14 +77,14 @@ function Navbars() {
           className="justify-between w-fit "
         >
           <Nav className="py-2 items-center text-center text-sm xl:text-lg !text-black  2xl:text-2xl flex gap-2 md:!gap-5 2xl:!gap-12">
-            <Nav.Link
+            {/* <Nav.Link
               href="/model-exam"
               className={`${
                 pathName === "/model-exam" ? "!text-green-600" : ""
               } text-center hover:!text-green-600`}
             >
               Courses
-            </Nav.Link>
+            </Nav.Link> */}
             <div className=" gap-5 hidden">
               <FaRegBell className="w-7 h-7 large:w-10 large:h-10" />
               <TiMessages className="w-7 h-7 large:w-10 large:h-10" />

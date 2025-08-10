@@ -7,6 +7,7 @@ import { PrismaClient } from "@prisma/client";
 import path from "path";
 import userRoutes from "../src/Routes/userRoute";
 import CourseRoute from "../src/Routes/CourseRoute";
+import CommentRoute from "../src/Routes/CommentRoute";
 const serviceAccount = require(path.join(__dirname, "../service.json"));
 
 admin.initializeApp({
@@ -40,6 +41,7 @@ async function connect() {
 
 app.use("/api", userRoutes);
 app.use("/api", CourseRoute);
+app.use("/api", CommentRoute);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");

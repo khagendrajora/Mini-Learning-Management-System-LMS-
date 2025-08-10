@@ -1,19 +1,16 @@
 export interface CourseType {
-  courseId: number;
+  courseId?: number;
   courseTitle: string;
-
   description: string;
   duration: string;
   status: string;
   thumbnail?: string;
-
   path: string;
-
   module: ModuleType[];
 }
 
 export interface ModuleType {
-  moduleId: number;
+  moduleId?: number;
   title: string;
   description: string;
   file: string[];
@@ -25,7 +22,7 @@ export interface ModuleType {
 export type Role = "ADMIN" | "STUDENT";
 
 export interface User {
-  userId: number;
+  userId?: number;
   email: string;
   firebaseId: string;
   password: string;
@@ -36,10 +33,18 @@ export interface User {
 }
 
 export interface AdminType {
-  adminId: number;
+  adminId?: number;
   email: string;
   password: string;
   role: Role;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface CommentTypes {
+  commentId?: number;
+  message: string;
+  createdAt: string;
+  module: ModuleType;
+  user: User;
 }

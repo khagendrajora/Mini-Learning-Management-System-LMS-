@@ -23,6 +23,7 @@ model User {
   role         Role      @default(STUDENT)
   createdAt    DateTime  @default(now())
   module       Module[]
+  comment      Comment[]
  
 }
 
@@ -47,7 +48,6 @@ model Course {
   thumbnail String?
   path String
   module Module[]
-
 }
 
 model Module {
@@ -60,6 +60,16 @@ model Module {
   courseId Int?
   user User? @relation(fields:[userId],references:[userId])
   userId Int?
+  comment Comment[]
+}
 
+model Comment {
+  commentId Int @id @default(autoincrement())
+  message String
+  createdAt DateTime @default(now())
+  user User? @relation(fields:[userId],references:[userId])
+  userId Int?
+  module Module? @relation(fields:[moduleId],references:[moduleId])
+  moduleId Int?
 }
 

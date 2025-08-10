@@ -151,7 +151,7 @@ export const Course = () => {
                           title="Delete"
                           onClick={(e) => {
                             e.stopPropagation();
-                            deleteCourse(d.courseId);
+                            deleteCourse(d.courseId || 0);
                           }}
                         />
                         <FaRegEdit
