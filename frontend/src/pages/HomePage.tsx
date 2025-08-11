@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { CourseType } from "../Types/SchemaTypes";
 import { toast } from "react-toastify";
@@ -9,8 +9,7 @@ const URL = import.meta.env.VITE_Backend_URL;
 const File_URL = import.meta.env.VITE_FILE_URL;
 
 const HomePage = () => {
-  const navigate = useNavigate();
-
+  const { query } = useOutletContext<{ query: string }>();
   const [pageLoader, setPageLoader] = useState(true);
   const count = 10;
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,65 +44,68 @@ const HomePage = () => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const handleSearch = (query: string) => {
-    const filter = data.filter(
-      (d) => d.courseTitle.toLowerCase() === query.toLowerCase()
-    );
-    if (filter.length > 0) {
-      setFilter(filter);
+
+  useEffect(() => {
+    if (query && query.length > 0) {
+      setFilter(
+        data?.filter((product) =>
+          product.courseTitle.toLowerCase().includes(query.toLowerCase())
+        ) || []
+      );
     } else {
       setFilter([]);
     }
-  };
+  }, [query, data]);
   return (
-    <div className="md:w-[95%] mt-20 mx-auto">
+    <div className="md:w-[95%] mt-10 sm:mt-20 mx-auto">
       <ToastContainer />
       {!pageLoader ? (
         paginatedItems.length > 0 ? (
-          <div className="">
-            {paginatedItems &&
-              paginatedItems.length > 0 &&
-              paginatedItems.map((d, index) => (
-                <div
-                  key={index}
-                  className="bg-neutral-100 shadow-sm border font-lexend rounded-xl p-[10px] w-full mx-auto max-w-[380px] sm:max-w-[300px] xl:max-w-[360px]"
-                >
-                  <div className="flex flex-col ">
-                    <img
-                      src={`${File_URL}/${d.thumbnail}`}
-                      alt=""
-                      className="rounded-lg"
-                    />
-                    <div className="flex gap-3 justify-between mt-1">
-                      <span className="p-1 px-2   rounded-lg text-black">
-                        {d.status === "true" ? "Active" : "Inactive"}
-                      </span>
-                      <span className="text-gray-400 flex items-center gap-1">
-                        <FaStar color="#FFC300" />
-                        4.5(1234)
-                      </span>
-                    </div>
-                    <h5 className="mt-1">{d.courseTitle}</h5>
+          <>
+            <div className="flex justify-center flex-wrap gap-4">
+              {paginatedItems &&
+                paginatedItems.length > 0 &&
+                paginatedItems.map((d, index) => (
+                  <div
+                    key={index}
+                    className="bg-neutral-100 shadow-sm border font-lexend rounded-xl p-[10px] w-full mx-auto  max-w-[300px] xl:max-w-[360px]"
+                  >
+                    <div className="flex flex-col ">
+                      <img
+                        src={`${File_URL}/${d.thumbnail}`}
+                        alt=""
+                        className="rounded-lg"
+                      />
+                      <div className="flex gap-3 justify-between mt-1">
+                        <span className="p-1 px-2   rounded-lg text-black">
+                          {d.status === "true" ? "Active" : "Inactive"}
+                        </span>
+                        <span className="text-gray-400 flex items-center gap-1">
+                          <FaStar color="#FFC300" />
+                          4.5(1234)
+                        </span>
+                      </div>
+                      <h5 className="mt-1">{d.courseTitle}</h5>
 
-                    <div className="relative inline-block    py-2 text-sm">
-                      Duration: {d.duration}
-                    </div>
-                    <hr />
-                    <div className="flex justify-center mb-1 gap-3 text-white font-semibold">
-                      <Link
-                        to={`course-detail/${d.courseId}`}
-                        className="bg-green-600 text-white !no-underline w-2/5 p-2 hover:bg-green-700 text-center !rounded-lg"
-                      >
-                        Explore
-                      </Link>
-                      <button className="bg-red-500 button2 p-2 w-2/5 !rounded-lg">
-                        Enroll&nbsp;Now
-                      </button>
+                      <div className="relative inline-block    py-2 text-sm">
+                        Duration: {d.duration}
+                      </div>
+                      <hr />
+                      <div className="flex justify-center mb-1 gap-3 text-white font-semibold">
+                        <Link
+                          to={`course-detail/${d.courseId}`}
+                          className="bg-green-600 text-white !no-underline w-2/5 p-2 hover:bg-green-700 text-center !rounded-lg"
+                        >
+                          Explore
+                        </Link>
+                        <button className="bg-red-500 button2 p-2 w-2/5 !rounded-lg">
+                          Enroll&nbsp;Now
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-
+                ))}
+            </div>
             <div className="flex items-center justify-center space-x-2 my-4">
               {Array.from({ length: totalPages }, (_, index) => (
                 <button
@@ -119,7 +121,7 @@ const HomePage = () => {
                 </button>
               ))}
             </div>
-          </div>
+          </>
         ) : (
           <span className="text-center flex  w-full h-screen">
             No Data Found

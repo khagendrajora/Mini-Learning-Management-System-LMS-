@@ -5,10 +5,8 @@ import { toast, ToastContainer } from "react-toastify";
 import { GoSearch } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { HiArchiveBoxXMark } from "react-icons/hi2";
-
 import type { User } from "../../Types/SchemaTypes";
 import { PageLoader } from "../../utils/Utils";
-
 const URL = import.meta.env.VITE_Backend_URL;
 
 export const UsersList = () => {

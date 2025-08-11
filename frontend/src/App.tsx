@@ -16,6 +16,7 @@ import { AdminRoute } from "./components/AdminRoute";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { UsersList } from "./pages/Admin/UsersList";
 import { UserDetail } from "./pages/Admin/UserDetail";
+import { DashboardData } from "./pages/Admin/DashboardData";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
             </AdminRoute>
           }
         >
+          <Route path="/admin" element={<DashboardData />} />
           <Route path="course/addcourse" element={<AddNewCourse />} />
           <Route path="course" element={<Course />} />
           <Route

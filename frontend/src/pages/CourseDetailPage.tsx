@@ -215,18 +215,18 @@ export const CourseDetailPage = () => {
                         value={msg}
                         name="msg"
                         onChange={(e) => setMsg(e.target.value)}
-                        className="p-2 !w-[10rem] border-black"
+                        className="p-1  border-black placeholder:text-xs"
                       />
                     </InputGroup>
                     <Button
                       variant="primary"
                       type="submit"
-                      className="max-w-[10rem] mx-auto"
+                      className="w-fit  mx-auto"
                     >
                       <span>{loading ? <Loader /> : "Submit"}</span>
                     </Button>
                   </Form>
-                  <div className="flex items-center justify-between mt-4">
+                  <div className="flex items-center flex-wrap justify-between mt-4">
                     <h1 className="">{data.courseTitle}</h1>
                     <p className="bg-yellow-500 p-1 h-fit rounded w-fit text-white">
                       {progress}% completed
@@ -257,9 +257,11 @@ export const CourseDetailPage = () => {
                   </span>
                 </h6>
               </div>
-              <p>{HTMLReactParser(data.description)}</p>
+              <p className="text-justify">
+                {HTMLReactParser(data.description)}
+              </p>
             </div>
-            <div className="mt-4 lg:w-[30%]">
+            <div className="sm:mt-4  overflow-auto lg:w-[30%]">
               <div className=" mt-4  space-y-2 ">
                 {data.module.length > 0 &&
                   data.module.map((m, index) => (
@@ -280,7 +282,6 @@ export const CourseDetailPage = () => {
                             </span>
                             {m.title}
                           </div>
-                          <div className="flex gap-3 item-center"></div>
                         </span>
                       </div>
 
@@ -349,10 +350,10 @@ export const CourseDetailPage = () => {
               </div>
             </div>
           </div>
-          <h3 className="">Your Comments</h3>
+          <h6 className="mt-3">Your Comments</h6>
           {comments.length > 0 &&
             comments.map((c, i) => (
-              <div className="w-fit bg-neutral-100  sm:min-w-[25rem] p-2">
+              <div className="w-full bg-neutral-100  sm:min-w-[25rem] max-w-[30rem] p-2">
                 <li className="flex  p-2 gap-3  items-center justify-between">
                   <div>{i + 1}.</div>
                   <div>{c.message}</div>

@@ -125,7 +125,7 @@ export const Dashboard = () => {
         </div>
       </aside>
 
-      <div className="bg-gray-100 p-2 mt-16 h-full sm:ml-64">
+      <div className="bg-gray-100 p-2 mt-16 h- sm:ml-64">
         <Outlet />
       </div>
     </>
