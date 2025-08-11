@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const firebaseAuth_1 = require("../middleware/firebaseAuth");
+const userController_1 = require("../controllers/userController");
+const ProgressController_1 = require("../controllers/ProgressController");
+const router = (0, express_1.Router)();
+router.post("/add-user", firebaseAuth_1.firebaseAuthMiddleware, userController_1.addUser);
+router.post("/login", firebaseAuth_1.firebaseAuthMiddleware, userController_1.login);
+router.post("/update-progress", ProgressController_1.updateProgress);
+router.get("/course-progress/:userId/:courseId", ProgressController_1.getCourseProgress);
+router.get("/get-users", userController_1.getUsers);
+router.get("/user-progress/:userId", userController_1.getUserProgressReport);
+router.delete("/delete-user/:id", userController_1.deleteUser);
+exports.default = router;
