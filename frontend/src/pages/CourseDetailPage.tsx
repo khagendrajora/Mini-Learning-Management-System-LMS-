@@ -155,6 +155,35 @@ export const CourseDetailPage = () => {
       setLoading(false);
     }
   };
+
+  const updateProgressApi = async (
+    userId: number,
+    moduleId: number,
+    videoName: string | null,
+    fileName: string | null
+  ) => {
+    try {
+      console.log("HIt");
+      await fetch(`${URL}/update-progress`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, moduleId, videoName, fileName }),
+      });
+    } catch (err) {
+      console.error("Progress update failed", err);
+    }
+  };
+
+  const [progress, setProgress] = useState();
+  useEffect(() => {
+    fetch(`${URL}/course-progress/${userId}/${courseId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(`Progress: ${data.percentage}%`);
+        setProgress(data.percentage);
+      });
+  }, [userId, courseId]);
+
   return (
     <>
       <ToastContainer />
@@ -197,7 +226,12 @@ export const CourseDetailPage = () => {
                       <span>{loading ? <Loader /> : "Submit"}</span>
                     </Button>
                   </Form>
-                  <h1 className="mt-4">{data.courseTitle}</h1>
+                  <div className="flex items-center justify-between mt-4">
+                    <h1 className="">{data.courseTitle}</h1>
+                    <p className="bg-yellow-500 p-1 h-fit rounded w-fit text-white">
+                      {progress}% completed
+                    </p>
+                  </div>
                 </div>
               </div>
               <div className="flex justify-between flex-wrap gap-4 mt-4">
@@ -262,15 +296,21 @@ export const CourseDetailPage = () => {
                             <div className="flex items-center border-b-1 border-gray-200">
                               <div className="flex w-full justify-between text-black items-center gap-2">
                                 <div
-                                  onClick={() =>
+                                  onClick={() => {
                                     dispatchVideo({
                                       type: "SET_VIDEO",
                                       payload: {
                                         video: v,
                                         moduleId: m.moduleId || 0,
                                       },
-                                    })
-                                  }
+                                    });
+                                    updateProgressApi(
+                                      userId,
+                                      m.moduleId || 0,
+                                      v,
+                                      null
+                                    );
+                                  }}
                                   className="flex items-center gap-2"
                                 >
                                   <MdOutlineSlowMotionVideo size={60} />
@@ -286,6 +326,14 @@ export const CourseDetailPage = () => {
                               <Link
                                 to={`${FILE_URL}/${f}`}
                                 target="blank"
+                                onClick={() =>
+                                  updateProgressApi(
+                                    userId,
+                                    m.moduleId || 0,
+                                    null,
+                                    f
+                                  )
+                                }
                                 className="flex  w-full justify-between !text-black items-center gap-2"
                               >
                                 <div className="flex items-center gap-2">

@@ -105,27 +105,20 @@ export const Dashboard = () => {
                 </span>
               </li>
 
-              <li>
-                <a
-                  href="#"
-                  className="flex items-center p-1  rounded-lg hover:text-green-500 hover:bg-gray-100 text-black !no-underline"
-                >
-                  <span className="flex-1 flex items-center gap-2  whitespace-nowrap">
-                    <TfiPencilAlt />
-                    Assignments
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="flex items-center p-1  rounded-lg hover:text-green-500 hover:bg-gray-100 text-black !no-underline"
-                >
-                  <span className="flex-1 flex items-center gap-2  whitespace-nowrap">
-                    <FaStar />
-                    Review
-                  </span>
-                </a>
+              <li className="flex items-center p-1  rounded-lg hover:text-green-500 hover:bg-gray-100 text-black !no-underline">
+                <span className="flex-1 flex items-center gap-2  whitespace-nowrap">
+                  <TfiPencilAlt />
+                  <Link
+                    className={`${
+                      path === "/admin/userslist"
+                        ? "!text-green-500"
+                        : "!text-black"
+                    } flex items-center p-1  rounded-lg hover:!text-green-500   !no-underline`}
+                    to="/admin/userslist"
+                  >
+                    Users
+                  </Link>
+                </span>
               </li>
             </ul>
           </div>

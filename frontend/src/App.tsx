@@ -14,6 +14,8 @@ import UpdateModule from "./pages/Admin/Course/UpdateModule";
 import { CourseDetailPage } from "./pages/CourseDetailPage";
 import { AdminRoute } from "./components/AdminRoute";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { UsersList } from "./pages/Admin/UsersList";
+import { UserDetail } from "./pages/Admin/UserDetail";
 
 function App() {
   return (
@@ -51,6 +53,8 @@ function App() {
             path="course/course-detail/module-update/:id"
             element={<UpdateModule />}
           />
+          <Route path="userslist" element={<UsersList />} />
+          <Route path="user-detail/:id" element={<UserDetail />} />
         </Route>
       </Routes>
     </BrowserRouter>

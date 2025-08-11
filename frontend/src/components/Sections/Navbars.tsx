@@ -13,6 +13,7 @@ import { toast, ToastContainer } from "react-toastify";
 function Navbars() {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
+  console.log(currentUser);
 
   const handleLogout = async () => {
     try {

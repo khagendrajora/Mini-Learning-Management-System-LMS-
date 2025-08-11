@@ -19,24 +19,9 @@ export const Login = () => {
     try {
       setIsButton(true);
       await login(email, password);
-      // const token = await getIdToken();
-      // if (token) {
-      // const res = await fetch(`${URL}/login`, {
-      //   method: "POST",
-      //   headers: { Authorization: "Bearer " + token },
-      //   body: JSON.stringify({ email, password }),
-      // });
-      // if (!res.ok) {
-      //   toast.error("Failed Login!");
-      //   return;
-      // }
+
       toast.success("Logined");
       navigate("/");
-
-      // } else {
-      //   toast.error("Failed Login!");
-      //   setIsButton(false);
-      // }
     } catch (err: any) {
       toast.error("Failed Login!" + "Invalid Credentials");
     } finally {
@@ -47,15 +32,6 @@ export const Login = () => {
   const handleGoogle = async () => {
     try {
       await loginWithGoogle();
-      // const token = await getIdToken();
-      // if (token) {
-      //   const res = await fetch(`${URL}/login`, {
-      //     headers: { Authorization: "Bearer " + token },
-      //   });
-      //   if (!res.ok) {
-      //     toast.error("Failed");
-      //     return;
-      //   }
 
       toast.success("Logined");
     } catch (err: any) {
@@ -111,15 +87,15 @@ export const Login = () => {
                     />
                     {password.length > 0 && (
                       <span className="absolute  right-3 top-1/2 -translate-y-1/2">
-                        {password ? (
+                        {!showPassword ? (
                           <FaEyeSlash
                             className="cursor-pointer"
-                            onClick={() => setShowPassword(false)}
+                            onClick={() => setShowPassword(true)}
                           />
                         ) : (
                           <FaEye
                             className="cursor-pointer"
-                            onClick={() => setShowPassword(true)}
+                            onClick={() => setShowPassword(false)}
                           />
                         )}
                       </span>

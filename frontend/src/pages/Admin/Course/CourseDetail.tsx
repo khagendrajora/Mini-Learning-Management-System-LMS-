@@ -402,7 +402,7 @@ export const CourseDescription = () => {
                 </Button>
               </div>
             </Form>
-            <div className="flex  justify-between w-11/12">
+            <div className="flex flex-wrap  justify-between w-11/12">
               <div className=" mt-4  space-y-2 ">
                 {data.module.length > 0 &&
                   data.module.map((m, index) => (
@@ -593,8 +593,8 @@ export const CourseDescription = () => {
                     </React.Fragment>
                   ))}
               </div>
-              <div className="bg-white h-fit p-3 rounded ">
-                <h3 className="">Your Comments</h3>
+              <div className="bg-white h-fit p-3 min-w-[20rem] rounded ">
+                <h5 className="">Comments</h5>
                 {comments.length > 0 &&
                   comments.map((c, i) => (
                     <div className="w-fit   p-2">

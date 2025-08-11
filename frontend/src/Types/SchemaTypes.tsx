@@ -48,3 +48,27 @@ export interface CommentTypes {
   module: ModuleType;
   user: User;
 }
+
+export interface UserProgressReport {
+  userId: number;
+  name: string;
+  email: string;
+  courses: CourseProgress[];
+}
+
+export interface CourseProgress {
+  courseId: number;
+  courseTitle: string;
+  totalModules: number;
+  completedModules: number;
+  overallProgressPercent: number;
+  modules: ModuleProgress[];
+}
+
+export interface ModuleProgress {
+  moduleId: number;
+  title: string;
+  totalItems: number;
+  watchedItems: number;
+  progressPercent: number;
+}
