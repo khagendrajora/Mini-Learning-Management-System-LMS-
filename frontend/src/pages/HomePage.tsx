@@ -73,8 +73,8 @@ const HomePage = () => {
                     <div className="flex flex-col ">
                       <img
                         src={`${File_URL}/${d.thumbnail}`}
-                        alt=""
-                        className="rounded-lg"
+                        alt="Image May not be availabe as render don`t haev free storage "
+                        className="h-[15rem] object-contain"
                       />
                       <div className="flex gap-3 justify-between mt-1">
                         <span className="p-1 px-2   rounded-lg text-black">
@@ -94,13 +94,10 @@ const HomePage = () => {
                       <div className="flex justify-center mb-1 gap-3 text-white font-semibold">
                         <Link
                           to={`course-detail/${d.courseId}`}
-                          className="bg-green-600 text-white !no-underline w-2/5 p-2 hover:bg-green-700 text-center !rounded-lg"
+                          className="bg-green-600 text-white !no-underline w-full p-2 hover:bg-green-700 text-center !rounded-lg"
                         >
                           Explore
                         </Link>
-                        <button className="bg-red-500 button2 p-2 w-2/5 !rounded-lg">
-                          Enroll&nbsp;Now
-                        </button>
                       </div>
                     </div>
                   </div>

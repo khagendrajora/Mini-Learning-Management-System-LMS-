@@ -6,7 +6,7 @@ const URL = import.meta.env.VITE_Backend_URL;
 
 export const UserDetail = () => {
   const [data, setData] = useState<UserProgressReport | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+
   const params = useParams();
   const id = params.id;
   console.log(id);
@@ -15,8 +15,6 @@ export const UserDetail = () => {
     fetchProgress();
   }, [id]);
   const fetchProgress = async () => {
-    setLoading(true);
-
     try {
       const response = await fetch(`${URL}/user-progress/${id}`, {
         method: "GET",
@@ -28,8 +26,6 @@ export const UserDetail = () => {
       setData(result);
     } catch (err: any) {
       toast.error("Failed");
-    } finally {
-      setLoading(false);
     }
   };
   return (

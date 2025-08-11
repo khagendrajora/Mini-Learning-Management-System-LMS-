@@ -403,7 +403,7 @@ export const CourseDescription = () => {
               </div>
             </Form>
             <div className="flex flex-wrap overflow-auto justify-between ">
-              <div className=" mt-4 max-w-[30rem] space-y-2 ">
+              <div className=" mt-4 max-w-[30rem] md:min-w-[30rem] space-y-2 ">
                 {data.module.length > 0 &&
                   data.module.map((m, index) => (
                     <React.Fragment key={index}>

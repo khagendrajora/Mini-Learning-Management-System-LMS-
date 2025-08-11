@@ -1,5 +1,5 @@
 import { AiOutlineBars } from "react-icons/ai";
-import { FaStar, FaUserPlus } from "react-icons/fa";
+import { FaUserPlus } from "react-icons/fa";
 import { FaHouse } from "react-icons/fa6";
 import { TfiPencilAlt } from "react-icons/tfi";
 import { TiBook } from "react-icons/ti";
