@@ -6,8 +6,10 @@ import { TiBook } from "react-icons/ti";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { toast } from "react-toastify";
+import { useState } from "react";
 
 export const Dashboard = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const { logout } = useAuth();
   const location = useLocation();
@@ -33,6 +35,7 @@ export const Dashboard = () => {
                 data-drawer-toggle="logo-sidebar"
                 aria-controls="logo-sidebar"
                 type="button"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
                 className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
               >
                 <AiOutlineBars />
@@ -58,9 +61,12 @@ export const Dashboard = () => {
       </nav>
 
       <aside
-        id="logo-sidebar"
-        className="fixed top-0 left-0 z-40 w-64 h-screen pt-24 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
-        aria-label="Sidebar"
+        // id="logo-sidebar"
+        className={`fixed top-0 left-0 z-40 w-64 h-screen pt-24 transition-transform bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700
+          ${
+            sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } sm:translate-x-0`}
+        // aria-label="Sidebar"
       >
         <div className="h-full !space-y-4 pb-4 px-4 overflow-y-auto bg-white ">
           <Link to="/admin" className="!no-underline">
